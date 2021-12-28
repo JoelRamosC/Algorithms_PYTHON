@@ -1,0 +1,47 @@
+import sqlite3
+import pandas as pd
+
+import os
+
+os.chdir(r'D:\Python\PyAD')
+
+con = sqlite3.connect('dados_vendas.db')
+
+#Consulta simples
+#Query
+cursor = con.execute("SELECT * FROM CLIENTES;")
+
+#Carregar e exibir resulado da query
+resultado = cursor.fetchall()
+resultado
+
+#Carregar resultado em um DataFrame
+consulta_sql = pd.DataFrame(resultado,
+                            columns=[campo[0]
+                                     for campo in cursor.description])
+
+
+#Transformar/Tratar dados antes da carga
+query = """
+SELECT * FROM CLIENTES
+WHERE ESTADO!=?;
+"""
+
+query2 = """
+SELECT * FROM CLIENTES
+WHERE ESTADO=?;
+"""
+
+parametro = [("RJ")]
+cursor = con.execute(query2, parametro)
+
+resultado = cursor.fetchall()
+resultado
+
+#Carregar resultado em um DataFrame
+clientes_RJ = pd.DataFrame(resultado,
+                            columns=[campo[0]
+                                     for campo in cursor.description])
+
+#Encerrar conexão com o banco de dados
+con.close()
