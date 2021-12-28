@@ -1,0 +1,20 @@
+#Biblioteca para trabalho com banco de dados sqlite3
+import sqlite3
+
+estrutura_db = """
+CREATE TABLE CLIENTES (
+    ID_CLIENTE    INTEGER    PRIMARY KEY    AUTOINCREMENT    NOT NULL,
+    NOME          TEXT       NOT NULL,
+    ENDERECO      TEXT,
+    CIDADE        TEXT,
+    ESTADO        TEXT
+);
+"""
+
+#Se o arquivo não existir, ele é criado com o código a seguir
+con = sqlite3.connect('dados_vendas.db')
+
+con.execute(estrutura_db)
+con.commit()
+
+con.close()
