@@ -1,0 +1,141 @@
+
+import pandas as pd
+
+df  = pd.read_excel(r'C:\Users\joelr\Desktop\14Bis Completo\14 Bis Sistema Linguístico\lista_dataset_inteligencia_artificial\lista_dataset_inteligencia_artificial.xlsx')
+
+def transforma_para_minusculas(x): 
+   return(str(x).lower()) 
+df['lista_pergunta'] = df['lista_pergunta'].apply(func = transforma_para_minusculas)
+df['lista_resposta'] = df['lista_resposta'].apply(func = transforma_para_minusculas)
+
+
+#código para gerar lista de entrada e saida com key word na pergunta
+lista_key_word_pergunta = [ ]
+lista_key_word_resposta = [ ]
+for j in range(len(df['lista_pergunta'])):
+    lista_key_word =  df.loc[j,'lista_pergunta'].split()
+    for search_word in lista_key_word:     
+        lista_key_word_pergunta.append(search_word)           
+        lista_key_word_resposta.append(df.loc[j,'lista_resposta'])
+
+
+
+def atualiza_coluna(lista1,lista2):
+    for j in range(len(df[lista1])):
+        rascunho =  df.loc[j,lista1].split()
+        for search_word in df.loc[j,lista1].split():    
+            for i in range(len(df[lista2])):
+                    if search_word == df.loc[i,lista2]:
+                        rascunho.remove(search_word)
+        df.loc[j,lista1] = " ".join(rascunho)
+        
+atualiza_coluna('lista_resposta', 'lista_limpeza')
+
+
+for j in range(len(df['lista_pergunta'])):
+    rascunho =  df.loc[j,'lista_pergunta'].split()
+    for search_word in df.loc[j,'lista_pergunta'].split():    
+        for i in range(len(df['lista_limpeza'])):
+                if search_word == df.loc[i,'lista_limpeza']:
+                    rascunho.remove(search_word)
+    df.loc[j,'lista_pergunta'] = " ".join(rascunho)
+    
+    
+for j in range(len(df['lista_pergunta'])):
+    rascunho =  df.loc[j,'lista_pergunta'].split()
+    for search_word in df.loc[j,'lista_pergunta'].split():    
+        for i in range(len(df['lista_interrogativo'])):
+                if search_word == df.loc[i,'lista_interrogativo']:
+                    rascunho.remove(search_word)
+    df.loc[j,'lista_pergunta'] = " ".join(sorted(rascunho))    
+                
+                
+
+import pandas as pd
+import random
+df_letras  = pd.read_excel(r'C:\Users\joelr\Desktop\14Bis Completo\14 Bis Sistema Linguístico\lista_dataset_inteligencia_artificial\codigo_letras.xlsx')
+
+df  = pd.read_excel(r'C:\Users\joelr\Desktop\14Bis Completo\14 Bis Sistema Linguístico\lista_dataset_inteligencia_artificial\lista_dataset_inteligencia_artificial.xlsx')
+
+
+def gerador_codigo(lista):
+    to_append = lista
+    a_series = pd.Series(to_append, index = df_code.columns)
+    return df_code.append(a_series, ignore_index=True)
+    
+def prod(iterable):
+    p = 1
+    for n in iterable:
+        p *= n
+    return p
+
+codigo_letras = {}
+for j in range(len(df_letras['codigo'])):  
+    var_temp = df_letras.loc[j,'codigo']
+    codigo_letras[str(var_temp)] = df_letras.loc[j,'valor']
+     
+def transforma_para_minusculas(x): 
+   return(str(x).lower()) 
+df['lista_pergunta'] = df['lista_pergunta'].apply(func = transforma_para_minusculas)
+df['lista_resposta'] = df['lista_resposta'].apply(func = transforma_para_minusculas)
+
+def criptografia(key_word_list):
+    #key_word_list = ['casa','consciência','sobrevivência','vida', 'novidade'] 
+    codigo_palavra_produto   = [ ]
+    codigo_palavra_soma      = [ ]
+    produto                  =  0
+    soma                     =  0
+    soma_letras              =  0
+    #key_word_reverse = key_word[::-1]
+    for key_word in key_word_list:
+        valor_palavra            = [ ]  
+        codigo_palavra           = [ ] 
+        codigo_palavra_ponderada = [ ] 
+        for i in key_word:
+            if i in codigo_letras:
+                valor_palavra.append(codigo_letras[i])
+        produto = prod(valor_palavra) #produto ponderado dos números
+        soma_letras = sum(valor_palavra)
+        codigo_palavra = valor_palavra
+        #Valor de cada letra por posição       
+        for p in range(1,len(key_word)+1):
+            valor_palavra[p-1] = (len(key_word)+1-p)*valor_palavra[p-1]
+        codigo_palavra_ponderada = valor_palavra
+        #codigo_palavra_produto.append(resultado)
+        soma = sum(codigo_palavra_ponderada)
+        codigo_palavra_soma.append(soma*soma_letras*len(key_word))
+    return codigo_palavra_soma
+     
+lista_palavras      =  [ ]
+resposta            =  [ ]
+lista_resposta       =  [ ]
+codigo_final        =  [ ]
+for j in range(len(df['lista_pergunta'])):
+    lista_palavras = criptografia(df.loc[j,'lista_pergunta'].split())
+    resposta       = df.loc[j,'lista_resposta']
+    for elemento in lista_palavras:
+        codigo_final.append(elemento)
+        lista_resposta.append(resposta)
+
+df_code = pd.DataFrame([ ], columns = ["word_code"])
+for j in range(len(codigo_final)):
+       df_code.loc[j,'word_code'] = codigo_final[j]
+       df_code.loc[j,'resposta'] = lista_resposta[j]
+
+df_code = df_code.sort_values(by=['word_code'])
+
+leque_code_respostas = [ ]
+leque_resposta = [ ]
+code_key_word   = criptografia(['criador','medo','ansiedade','amor','consciência','sobreviver','sentimento','sentir'])
+for i in range(len(df_code['word_code'])):
+    for elemento in code_key_word:
+        if df_code.loc[i,'word_code'] == elemento:
+            leque_code_respostas.append(elemento)
+            leque_resposta.append(df_code.loc[i,'resposta'])
+            
+print(random.choice(leque_resposta))    
+
+
+
+
+
